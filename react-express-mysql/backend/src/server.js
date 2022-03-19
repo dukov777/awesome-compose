@@ -26,6 +26,31 @@ app.get("/", function(req, res, next) {
     .catch(next);
 });
 
+// app.get("/clicks", function(req, res, next) {
+//   database.raw('select click from new_schema.user_table')
+//     .then(([rows, columns]) => rows)
+//     .then((row) => res.json({ clicks: row }))
+//     .catch(next);
+// });
+app.get("/clicks", function(req, res, next) {
+  database.select('click').from('new_schema.user_table')
+    .then((rows) => rows)
+    .then(
+      (row) => {
+        console.log(row); 
+        res.json({ clicks: row });
+      })
+    .catch(next);
+});
+
+app.get("/click/:userId", function(req, res, next) {
+  database.raw('select click from new_schema.user_table where name = ?', req.params.userId)
+    .then(([rows, columns]) => rows[0])
+    .then((row) => res.json({ click: row.click }))
+    .catch(next);
+});
+
+
 app.get("/healthz", function(req, res) {
   // do app logic here to determine if app is truly healthy
   // you should return 200 if healthy, and anything else will fail
